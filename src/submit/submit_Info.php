@@ -2,7 +2,7 @@
 session_start();
 include("../config/connection.php");
 
-// Check if the student ID is set in the session
+
 if (!isset($_SESSION['student_id'])) {
     header("Location: ../studentLoginForm.php");
     exit();
@@ -10,7 +10,7 @@ if (!isset($_SESSION['student_id'])) {
 
 $student_id = $_SESSION['student_id'];
 
-// Retrieve form data
+
 $lastname = $_POST['lastname'];
 $firstname = $_POST['firstname'];
 $middlename = $_POST['middlename'];
@@ -19,7 +19,7 @@ $sex = $_POST['sex'];
 $birthday = $_POST['birthday'];
 $address = $_POST['address'];
 
-// Handle file upload
+
 if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
     $picture = uniqid() . '-' . basename($_FILES['picture']['name']);
     $target_dir = "../uploads/";
@@ -32,7 +32,7 @@ if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
     $picture = null;
 }
 
-// Update student details in the database
+
 $sql = "UPDATE tblstudents SET Lastname = ?, Firstname = ?, Mi = ?, Age = ?, Gender = ?, Bdate = ?, Address = ?, Picture = ? WHERE ID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("sssissssi", $lastname, $firstname, $middlename, $age, $sex, $birthday, $address, $picture, $student_id);

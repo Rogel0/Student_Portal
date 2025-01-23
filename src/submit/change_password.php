@@ -12,24 +12,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $new_password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Check if the new password and confirm password match
+
     if ($new_password !== $confirm_password) {
         $_SESSION['password_error'] = 'Passwords do not match.';
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit();
     }
 
-    // Check if the new password meets the minimum length requirement
     if (strlen($new_password) < 8) {
         $_SESSION['password_error'] = 'Password must be at least 8 characters long.';
         header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit();
     }
 
-    // Hash the new password
+
     $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-    // Update the password in the database
+
     $sql = "UPDATE tblstudents SET password = ? WHERE ID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $hashed_password, $student_id);
