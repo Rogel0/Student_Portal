@@ -106,21 +106,21 @@ $picture_url = !empty($student['Picture']) ? 'uploads/' . $student['Picture'] : 
                 <div class="bg-[#f4f5f5] p-6 rounded-lg shadow-md gap-2 flex flex-col md:p-8 lg:p-10">
                     <h3 class="text-2xl font-semibold md:text-3xl lg:text-4xl text-purple-700">Assessment Details</h3>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">RegNo:</span> <span class="font-medium text-gray-700"><?php echo $assessment['RegNo']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Total Assessment:</span> <span class="font-medium text-gray-700"><?php echo $assessment['TotalAssessment']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Reg Fee:</span> <span class="font-medium text-gray-700"><?php echo $assessment['RegFee']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Tuition Fee:</span> <span class="font-medium text-gray-700"><?php echo $assessment['TuitionFee']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Misc Fee:</span> <span class="font-medium text-gray-700"><?php echo $assessment['MiscFee']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Lab Fee:</span> <span class="font-medium text-gray-700"><?php echo $assessment['LabFee']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Clinic Fee:</span> <span class="font-medium text-gray-700"><?php echo $assessment['ClinicFee']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Developmental Fee:</span> <span class="font-medium text-gray-700"><?php echo $assessment['DevelopmentalFee']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Other Fees:</span> <span class="font-medium text-gray-700"><?php echo $assessment['OtherFees']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Inst Fee:</span> <span class="font-medium text-gray-700"><?php echo $assessment['InstFee']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Discount:</span> <span class="font-medium text-gray-700"><?php echo $assessment['Discount']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Payment Scheme:</span> <span class="font-medium text-gray-700"><?php echo $assessment['PaymentScheme']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Date Assessed:</span> <span class="font-medium text-gray-700"><?php echo $assessment['DateAssessed']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Assessor:</span> <span class="font-medium text-gray-700"><?php echo $assessment['Assessor']; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Status:</span> <span class="font-medium text-green-500"><?php echo $assessment['STATUS']; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">RegNo:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['RegNo']) ? $assessment['RegNo'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Total Assessment:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['TotalAssessment']) ? $assessment['TotalAssessment'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Reg Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['RegFee']) ? $assessment['RegFee'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Tuition Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['TuitionFee']) ? $assessment['TuitionFee'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Misc Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['MiscFee']) ? $assessment['MiscFee'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Lab Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['LabFee']) ? $assessment['LabFee'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Clinic Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['ClinicFee']) ? $assessment['ClinicFee'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Developmental Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['DevelopmentalFee']) ? $assessment['DevelopmentalFee'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Other Fees:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['OtherFees']) ? $assessment['OtherFees'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Inst Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['InstFee']) ? $assessment['InstFee'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Discount:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['Discount']) ? $assessment['Discount'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Payment Scheme:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['PaymentScheme']) ? $assessment['PaymentScheme'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Date Assessed:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['DateAssessed']) ? $assessment['DateAssessed'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Assessor:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['Assessor']) ? $assessment['Assessor'] : 'N/A'; ?></span></p>
+                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Status:</span> <span class="font-medium text-green-500"><?php echo isset($assessment['STATUS']) ? $assessment['STATUS'] : 'N/A'; ?></span></p>
                     </div>
                 </div>
             </div>

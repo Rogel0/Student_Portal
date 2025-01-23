@@ -1,4 +1,5 @@
 <?php
+session_start();
 include("config/connection.php");
 ?>
 
@@ -22,6 +23,7 @@ include("config/connection.php");
     <div class="flex items-center justify-center h-screen bg-gray-100 pt-7 relative z-10">
         <div class="bg-white p-8 rounded-lg h-auto shadow-lg w-full md:w-2/3 lg:w-3/4">
             <h1 class="text-2xl mb-2 mt-3 md:text-4xl font-bold text-center">Register</h1>
+            <?php include("alerts/registered.php") ?>
             <form id="regForm" action="./auth/register.php" method="POST" class="flex flex-col md:gap-2 md:pt-4">
                 <div class="relative mb-4 z-0">
                     <input type="text" name="lastname" id="lastname" class="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Last Name">
