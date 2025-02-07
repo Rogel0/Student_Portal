@@ -6,7 +6,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-
     $sql = "SELECT * FROM tblstudents WHERE username = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $username);
@@ -17,9 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $result->fetch_assoc();
         $stored_password = $user['password'];
 
+        // Trim any whitespace from the stored password
+        $stored_password = trim($stored_password);
 
-        if (password_verify($password, $stored_password)) {
+        if ($password === $stored_password) {
+            // Set the session variables
             $_SESSION['student_id'] = $user['ID'];
+            $_SESSION['LRN'] = $user['LRN']; // Assuming LRN is a column in tblstudents
+
+            // Redirect to the dashboard
             header("Location: ../studentDashboard.php");
             exit();
         } else {
@@ -32,8 +37,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: ../studentLoginForm.php");
         exit();
     }
-
-    $stmt->close();
-    $conn->close();
 }
 ?>

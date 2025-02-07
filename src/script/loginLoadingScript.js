@@ -1,8 +1,8 @@
-document.getElementById('regForm').addEventListener('submit', function() {
-    event.preventDefault();
-    document.getElementById('loadingScreen').style.display = 'flex';
+document.getElementById('regForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  document.getElementById('loadingScreen').style.display = 'flex';
 
-    setTimeout(function() {
+  setTimeout(function() {
       document.getElementById('regForm').submit();
-    }, 3000);
-  });
+  }, 3000);
+});
