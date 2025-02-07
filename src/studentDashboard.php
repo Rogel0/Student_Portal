@@ -2,41 +2,34 @@
 session_start();
 include("config/connection.php");
 
-if (!isset($_SESSION['student_id'])) {
-    header("Location: studentLoginForm.php");
+// Check if the session variable is set
+if (!isset($_SESSION['LRN'])) {
+    // Redirect to login page or show an error message
+    header("Location: auth/login.php");
     exit();
 }
 
-$student_id = $_SESSION['student_id'];
+// Assuming you have a session variable storing the student's LRN
+$studentId = $_SESSION['LRN'];
 
-// Fetch student details
-$sql = "SELECT * FROM tblstudents WHERE ID = ?";
+// Fetch student's name
+$nameQuery = "SELECT Firstname, Lastname FROM tblstudents WHERE LRN = ?";
+$nameStmt = $conn->prepare($nameQuery);
+$nameStmt->bind_param("s", $studentId);
+$nameStmt->execute();
+$nameResult = $nameStmt->get_result();
+$studentName = $nameResult->fetch_assoc();
+
+// Fetch subjects filtered by LRN
+$sql = "SELECT SubjectCode, SubjDesc FROM qrysubject WHERE LRN = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $student_id);
+$stmt->bind_param("s", $studentId);
 $stmt->execute();
 $result = $stmt->get_result();
-$student = $result->fetch_assoc();
-$stmt->close();
-
-$lrn = $student['LRN'];
-
-// Fetch assessment details
-$sql_assessment = "SELECT * FROM view_assessment_details WHERE LRN = ?";
-$stmt_assessment = $conn->prepare($sql_assessment);
-$stmt_assessment->bind_param("s", $lrn);
-$stmt_assessment->execute();
-$result_assessment = $stmt_assessment->get_result();
-$assessment = $result_assessment->fetch_assoc();
-$stmt_assessment->close();
-
-$conn->close();
-
-$picture_url = !empty($student['Picture']) ? 'uploads/' . $student['Picture'] : 'path/to/default/image.jpg';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,91 +37,27 @@ $picture_url = !empty($student['Picture']) ? 'uploads/' . $student['Picture'] : 
     <link rel="stylesheet" href="css/output.css">
     <link rel="stylesheet" href="css/loadingScreen.css">
     <title>Dashboard</title>
-    <style>
-        .profile-pic {
-            position: relative;
-            cursor: pointer;
-        }
-        .profile-pic input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-        .profile-pic:hover .change-pic {
-            display: flex;
-        }
-        .change-pic {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-        }
-    </style>
 </head>
-
-<body>
-    <?php include("components/studentHeaderComponent.php") ?>
-    <section class="mx-auto pt-12">
-        <div class="flex flex-col items-center">
-            <div class="flex items-center bg-[#f5f4f4] w-full h-auto p-6 gap-5 text-black md:p-8 lg:p-10">
-                <form id="profilePicForm" action="submit/updateProfilePicture.php" method="POST" enctype="multipart/form-data">
-                    <div class="profile-pic w-20 h-20 border-2 border-black rounded-full bg-transparent md:w-24 md:h-24 lg:w-28 lg:h-28" style="background-image: url('<?php echo $picture_url; ?>'); background-size: cover; background-position: center;">
-                        <div class="change-pic">Change Picture</div>
-                        <input type="file" name="profile_picture" id="profile_picture" onchange="document.getElementById('profilePicForm').submit();">
-                    </div>
-                </form>
-                <div class="flex flex-col gap-2">
-                    <h3 class="text-2xl font-semibold md:text-3xl lg:text-4xl"><?php echo $student['Firstname'] . ' ' . $student['Lastname']; ?></h3>
-                    <h2 class="text-lg md:text-xl lg:text-2xl">Age: <span><?php echo $student['Age']; ?></span></h2>
-                    <h2 class="text-lg md:text-xl lg:text-2xl">Address: <span><?php echo $student['Address']; ?></span></h2>
-                </div>
-            </div>
-            <div class="flex flex-col gap-5 w-full p-6 pt-5 md:p-8 lg:p-10">
-                <div class="bg-[#f4f5f5] p-6 rounded-lg shadow-md md:p-8 lg:p-10">
-                    <h2 class="text-xl font-bold mb-4 md:text-2xl lg:text-3xl">Student Details</h2>
-                    <h3 class="text-lg md:text-xl lg:text-2xl">Nickname: <span class="font-medium"><?php echo $student['Mi']; ?></span></h3>
-                    <h3 class="text-lg md:text-xl lg:text-2xl">Birthday: <span class="font-medium"><?php echo $student['Bdate']; ?></span></h3>
-                    <h3 class="text-lg md:text-xl lg:text-2xl">Sex: <span class="font-medium"><?php echo $student['Gender']; ?></span></h3>
-                </div>
-            </div>
-            <div class="flex flex-col gap-5 w-full p-6 pt-5 md:p-8 lg:p-10">
-                <div class="bg-[#f4f5f5] p-6 rounded-lg shadow-md gap-2 flex flex-col md:p-8 lg:p-10">
-                    <h3 class="text-2xl font-semibold md:text-3xl lg:text-4xl text-purple-700">Assessment Details</h3>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">RegNo:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['RegNo']) ? $assessment['RegNo'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Total Assessment:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['TotalAssessment']) ? $assessment['TotalAssessment'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Reg Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['RegFee']) ? $assessment['RegFee'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Tuition Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['TuitionFee']) ? $assessment['TuitionFee'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Misc Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['MiscFee']) ? $assessment['MiscFee'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Lab Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['LabFee']) ? $assessment['LabFee'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Clinic Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['ClinicFee']) ? $assessment['ClinicFee'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Developmental Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['DevelopmentalFee']) ? $assessment['DevelopmentalFee'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Other Fees:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['OtherFees']) ? $assessment['OtherFees'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Inst Fee:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['InstFee']) ? $assessment['InstFee'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Discount:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['Discount']) ? $assessment['Discount'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Payment Scheme:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['PaymentScheme']) ? $assessment['PaymentScheme'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Date Assessed:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['DateAssessed']) ? $assessment['DateAssessed'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Assessor:</span> <span class="font-medium text-gray-700"><?php echo isset($assessment['Assessor']) ? $assessment['Assessor'] : 'N/A'; ?></span></p>
-                        <p class="text-base md:text-lg lg:text-xl"><span class="font-bold">Status:</span> <span class="font-medium text-green-500"><?php echo isset($assessment['STATUS']) ? $assessment['STATUS'] : 'N/A'; ?></span></p>
-                    </div>
-                </div>
-            </div>
+<body class="flex flex-col h-screen">
+    <?php
+    $firstname = htmlspecialchars($studentName['Firstname']);
+    $lastname = htmlspecialchars($studentName['Lastname']);
+    include("components/studentHeaderComponent.php");
+    ?>
+    <div class="flex flex-grow w-full p-6">
+        <div class="md:pl-14">
+        <?php include("components/studentSidebar.php") ?>
         </div>
-    </section>
+        <div class="flex-grow p-6 md:ml-64 md:flex md:justify-center md:pt-32">
+            <section class="w-full max-w-4xl pt-12">
+                <div>
+                    <?php  include("components/currentSubjects.php"); ?>
+                </div>
+            </section>
+        </div>
+    </div>
 </body>
 <script src="script/mobileNav.js"></script>
 <script src="script/preventDefault.js"></script>
 <script src="script/loginLoadingScript.js"></script>
-
 </html>
