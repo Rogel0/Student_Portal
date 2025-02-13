@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stored_password = $user['password'];
         $status = $user['Status'];
 
-        // Trim any whitespace from the stored password
         $stored_password = trim($stored_password);
 
         if ($status === 'Inactive') {
@@ -27,11 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         if ($password === $stored_password) {
-            // Set the session variables
             $_SESSION['student_id'] = $user['ID'];
-            $_SESSION['LRN'] = $user['LRN']; // Assuming LRN is a column in tblstudents
+            $_SESSION['LRN'] = $user['LRN'];
 
-            // Log the login activity
             $activity = "Login";
             $date = date("Y-m-d");
             $time = date("H:i:s");
