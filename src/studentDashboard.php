@@ -9,10 +9,10 @@ if (!isset($_SESSION['LRN'])) {
     exit();
 }
 
-// Assuming you have a session variable storing the student's LRN
+
 $studentId = $_SESSION['LRN'];
 
-// Fetch student's name
+
 $nameQuery = "SELECT Firstname, Lastname FROM tblstudents WHERE LRN = ?";
 $nameStmt = $conn->prepare($nameQuery);
 $nameStmt->bind_param("s", $studentId);
@@ -20,10 +20,15 @@ $nameStmt->execute();
 $nameResult = $nameStmt->get_result();
 $studentName = $nameResult->fetch_assoc();
 
-// Fetch subjects filtered by LRN
-$sql = "SELECT SubjectCode, SubjDesc FROM qrysubject WHERE LRN = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $studentId);
+
+$syQuery = "SELECT SY FROM tblsy WHERE Status IN ('OPEN', 'CLOSED')";
+$syResult = $conn->query($syQuery);
+
+
+$selectedYear = isset($_GET['year']) ? $_GET['year'] : '';
+$subjectQuery = "SELECT SubjectCode, SubjDesc, EmployeeNo FROM qrysubjects WHERE SY = ? AND LRN = ?";
+$stmt = $conn->prepare($subjectQuery);
+$stmt->bind_param("ss", $selectedYear, $studentId);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
@@ -48,11 +53,9 @@ $result = $stmt->get_result();
         <div class="md:pl-14">
         <?php include("components/studentSidebar.php") ?>
         </div>
-        <div class="flex-grow p-6 md:ml-64 md:flex md:justify-center md:pt-32">
+        <div class="flex-grow pt-2 md:ml-64 md:flex md:justify-center md:pt-32">
             <section class="w-full max-w-4xl pt-12">
-                <div>
                     <?php  include("components/currentSubjects.php"); ?>
-                </div>
             </section>
         </div>
     </div>

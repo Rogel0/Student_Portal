@@ -2,7 +2,6 @@
 session_start();
 include("config/connection.php");
 
-
 if (!isset($_SESSION['student_id'])) {
     header("Location: auth/login.php");
     exit();
@@ -10,7 +9,6 @@ if (!isset($_SESSION['student_id'])) {
 
 $studentId = $_SESSION['student_id'];
 
-error_log("Student ID: " . $studentId);
 
 $lrnQuery = "SELECT LRN FROM tblstudents WHERE ID = ?";
 $lrnStmt = $conn->prepare($lrnQuery);
@@ -19,7 +17,6 @@ $lrnStmt->execute();
 $lrnResult = $lrnStmt->get_result();
 $studentLRN = $lrnResult->fetch_assoc();
 
-error_log("Student LRN: " . print_r($studentLRN, true));
 
 $LRN = htmlspecialchars($studentLRN['LRN'] ?? 'No data');
 
@@ -30,7 +27,6 @@ $balanceStmt->execute();
 $balanceResult = $balanceStmt->get_result();
 $studentBalance = $balanceResult->fetch_assoc();
 
-error_log("Student Balance: " . print_r($studentBalance, true));
 
 $balance = htmlspecialchars($studentBalance['Balance'] ?? 'N/A');
 
@@ -41,10 +37,8 @@ $assessmentStmt->execute();
 $assessmentResult = $assessmentStmt->get_result();
 $totalAssessment = $assessmentResult->fetch_assoc();
 
-error_log("Total Assessment: " . print_r($totalAssessment, true));
 
 $totalAssessmentValue = htmlspecialchars($totalAssessment['TotalAssessment'] ?? 'N/A');
-
 
 $nameQuery = "SELECT Firstname, Lastname FROM tblstudents WHERE ID = ?";
 $nameStmt = $conn->prepare($nameQuery);
@@ -53,7 +47,6 @@ $nameStmt->execute();
 $nameResult = $nameStmt->get_result();
 $studentName = $nameResult->fetch_assoc();
 
-error_log("Student Name: " . print_r($studentName, true));
 
 $firstname = htmlspecialchars($studentName['Firstname'] ?? 'No data');
 $lastname = htmlspecialchars($studentName['Lastname'] ?? 'No data');
@@ -69,7 +62,34 @@ while ($row = $paymentResult->fetch_assoc()) {
     $payments[] = $row;
 }
 
-error_log("Payments: " . print_r($payments, true));
+
+$assessmentQuery = "SELECT SY, LRN, Lastname, Firstname, StudType, GLevel, RegNo, TotalAssessment, RegFee, TuitionFee, MiscFee, LabFee, ClinicFee, DevelopmentalFee, OtherFees, InstFee, Discount, PaymentScheme, DateAssessed, Assessor, STATUS FROM qryassessment WHERE LRN = ?";
+$assessmentStmt = $conn->prepare($assessmentQuery);
+$assessmentStmt->bind_param("s", $LRN);
+$assessmentStmt->execute();
+$assessmentResult = $assessmentStmt->get_result();
+$assessmentDetails = $assessmentResult->fetch_assoc();
+
+$SY = htmlspecialchars($assessmentDetails['SY'] ?? 'No data');
+$Lastname = htmlspecialchars($assessmentDetails['Lastname'] ?? 'No data');
+$Firstname = htmlspecialchars($assessmentDetails['Firstname'] ?? 'No data');
+$StudType = htmlspecialchars($assessmentDetails['StudType'] ?? 'No data');
+$GLevel = htmlspecialchars($assessmentDetails['GLevel'] ?? 'No data');
+$RegNo = htmlspecialchars($assessmentDetails['RegNo'] ?? 'No data');
+$TotalAssessment = htmlspecialchars($assessmentDetails['TotalAssessment'] ?? 'No data');
+$RegFee = htmlspecialchars($assessmentDetails['RegFee'] ?? 'No data');
+$TuitionFee = htmlspecialchars($assessmentDetails['TuitionFee'] ?? 'No data');
+$MiscFee = htmlspecialchars($assessmentDetails['MiscFee'] ?? 'No data');
+$LabFee = htmlspecialchars($assessmentDetails['LabFee'] ?? 'No data');
+$ClinicFee = htmlspecialchars($assessmentDetails['ClinicFee'] ?? 'No data');
+$DevelopmentalFee = htmlspecialchars($assessmentDetails['DevelopmentalFee'] ?? 'No data');
+$OtherFees = htmlspecialchars($assessmentDetails['OtherFees'] ?? 'No data');
+$InstFee = htmlspecialchars($assessmentDetails['InstFee'] ?? 'No data');
+$Discount = htmlspecialchars($assessmentDetails['Discount'] ?? 'No data');
+$PaymentScheme = htmlspecialchars($assessmentDetails['PaymentScheme'] ?? 'No data');
+$DateAssessed = htmlspecialchars($assessmentDetails['DateAssessed'] ?? 'No data');
+$Assessor = htmlspecialchars($assessmentDetails['Assessor'] ?? 'No data');
+$STATUS = htmlspecialchars($assessmentDetails['STATUS'] ?? 'No data');
 ?>
 
 <!DOCTYPE html>
@@ -97,6 +117,9 @@ error_log("Payments: " . print_r($payments, true));
                 </div>
                 <div>
                     <?php include("components/paymentHistory.php"); ?>
+                </div>
+                <div>
+                    <?php include("components/studentAssessment.php") ?>
                 </div>
             </section>
         </div>
