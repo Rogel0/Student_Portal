@@ -21,6 +21,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     Student Account
                 </a>
             </li>
+            <li class="flex items-center px-6 py-5 border border-white <?php echo $current_page == 'studentSettings.php' ? 'bg-[#81007E]' : 'text-white'; ?> hover:bg-[#81007E] active:bg-gray-600 flex-grow">
+                <a href="./studentGrades.php" class="flex items-center w-full h-full">
+                    <svg class="h-6 w-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Student Grades
+                </a>
+            </li>
             <li class="flex items-center px-6 py-5 border border-white <?php echo $current_page == 'studentInfoForm.php' ? 'bg-[#81007E]' : 'text-white'; ?> hover:bg-[#81007E] active:bg-gray-600 flex-grow">
                 <a href="./studentAnnouncements.php" class="flex items-center w-full h-full">
                     <svg class="h-6 w-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -29,6 +29,6 @@ if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == 
 
 $conn->close();
 
-header("Location: ../studentDashboard.php");
+header("Location: ../studentProfile.php");
 exit();
 ?>

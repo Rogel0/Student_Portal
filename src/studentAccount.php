@@ -9,6 +9,8 @@ if (!isset($_SESSION['student_id'])) {
 
 $studentId = $_SESSION['student_id'];
 
+$syQuery = "SELECT SY FROM tblsy WHERE Status IN ('OPEN', 'CLOSED')";
+$syResult = $conn->query($syQuery);
 
 $lrnQuery = "SELECT LRN FROM tblstudents WHERE ID = ?";
 $lrnStmt = $conn->prepare($lrnQuery);
@@ -16,7 +18,6 @@ $lrnStmt->bind_param("i", $studentId);
 $lrnStmt->execute();
 $lrnResult = $lrnStmt->get_result();
 $studentLRN = $lrnResult->fetch_assoc();
-
 
 $LRN = htmlspecialchars($studentLRN['LRN'] ?? 'No data');
 
@@ -27,7 +28,6 @@ $balanceStmt->execute();
 $balanceResult = $balanceStmt->get_result();
 $studentBalance = $balanceResult->fetch_assoc();
 
-
 $balance = htmlspecialchars($studentBalance['Balance'] ?? 'N/A');
 
 $assessmentQuery = "SELECT TotalAssessment FROM qrycollection WHERE LRN = ?";
@@ -36,7 +36,6 @@ $assessmentStmt->bind_param("s", $LRN);
 $assessmentStmt->execute();
 $assessmentResult = $assessmentStmt->get_result();
 $totalAssessment = $assessmentResult->fetch_assoc();
-
 
 $totalAssessmentValue = htmlspecialchars($totalAssessment['TotalAssessment'] ?? 'N/A');
 
@@ -47,13 +46,14 @@ $nameStmt->execute();
 $nameResult = $nameStmt->get_result();
 $studentName = $nameResult->fetch_assoc();
 
-
 $firstname = htmlspecialchars($studentName['Firstname'] ?? 'No data');
 $lastname = htmlspecialchars($studentName['Lastname'] ?? 'No data');
 
-$paymentQuery = "SELECT PaymentFor, Amount, DatePayment FROM qrycollection WHERE LRN = ?";
+$selectedYear = isset($_GET['year']) ? $_GET['year'] : '';
+
+$paymentQuery = "SELECT SINo, PaymentFor, Amount, DatePayment FROM qrycollection WHERE LRN = ? AND SY = ?";
 $paymentStmt = $conn->prepare($paymentQuery);
-$paymentStmt->bind_param("s", $LRN);
+$paymentStmt->bind_param("ss", $LRN, $selectedYear);
 $paymentStmt->execute();
 $paymentResult = $paymentStmt->get_result();
 
@@ -61,7 +61,6 @@ $payments = [];
 while ($row = $paymentResult->fetch_assoc()) {
     $payments[] = $row;
 }
-
 
 $assessmentQuery = "SELECT SY, LRN, Lastname, Firstname, StudType, GLevel, RegNo, TotalAssessment, RegFee, TuitionFee, MiscFee, LabFee, ClinicFee, DevelopmentalFee, OtherFees, InstFee, Discount, PaymentScheme, DateAssessed, Assessor, STATUS FROM qryassessment WHERE LRN = ?";
 $assessmentStmt = $conn->prepare($assessmentQuery);
